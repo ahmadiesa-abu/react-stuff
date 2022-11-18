@@ -10,12 +10,14 @@ const check_manager = async (manager, username, password) => {
             'Content-Type': 'application/json;charset=UTF-8',
             'Authorization': `Basic ${encodedAuth}`,
             'Tenant': 'default_tenant',
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "http://localhost:3000",
             'Access-Control-Allow-Credentials': "true",
             'Access-Control-Allow-Private-Network': "true",
-            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+            'Access-Control-Allow-Headers': 'X-Requested-With,content-type,authorization,authentication-token,tenant'
         },
-        data: null
+        data: null,
+        crossdomain: true
     };
     axios.get(`http://${manager}/api/v3.1/version`, config)
         .then(res=> console.log(res))
