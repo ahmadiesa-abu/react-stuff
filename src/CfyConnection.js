@@ -4,13 +4,18 @@ import axios from 'axios';
 
 const check_manager = async (manager, username, password) => {
 
-    const encodedAuth = Buffer.from(`${username}:${password}`).toString('base64');     
+    const encodedAuth = Buffer.from(`${username}:${password}`).toString('base64');
     const config = {
         headers:{
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8',
             'Authorization': `Basic ${encodedAuth}`,
             'Tenant': 'default_tenant',
-        }
+            "Access-Control-Allow-Origin": "*",
+            'Access-Control-Allow-Credentials': "true",
+            'Access-Control-Allow-Private-Network': "true",
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+        },
+        data: null
     };
     axios.get(`http://${manager}/api/v3.1/version`, config)
         .then(res=> console.log(res))
@@ -31,42 +36,42 @@ class CfyConnection extends React.Component {
       managerDetails: "",
       fields: { manager: '', username: '', password: '' }
     };
-    
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-     
+
   handleChange(event) {
     let input = this.state.input;
     input[event.target.name] = event.target.value;
-  
+
     this.setState({
       input
     });
   }
-     
+
   handleSubmit(event) {
     event.preventDefault();
-  
+
     if(this.validate()){
 
         let manager = this.state.input["manager"];
         let username = this.state.input["username"];
         let password = this.state.input["password"];
 
-        
+
         check_manager(manager, username, password);
-         
-  
+
+
         let input = {};
         input["manager"] = "";
         input["username"] = "";
         input["password"] = "";
         this.setState({input:input});
-        
+
     }
   }
-  
+
   validate(){
       let input = this.state.input;
       let errors = {};
@@ -74,26 +79,26 @@ class CfyConnection extends React.Component {
 
       if (!input["manager"]){
         isValid = false;
-        errors["manager"] = "Please enter your manager.";      
+        errors["manager"] = "Please enter your manager.";
       }
-   
+
       if (!input["username"]) {
         isValid = false;
         errors["username"] = "Please enter your username.";
       }
-  
+
       if (!input["password"]) {
         isValid = false;
         errors["password"] = "Please enter your password.";
       }
-  
+
       this.setState({
         errors: errors
       });
-  
+
       return isValid;
   }
-     
+
   render() {
     return (
       <div>
@@ -102,43 +107,43 @@ class CfyConnection extends React.Component {
 
         <div className="form-group">
             <label htmlFor="manager">Manager:</label>
-            <input 
-              type="text" 
-              name="manager" 
+            <input
+              type="text"
+              name="manager"
               value={this.state.input.manager}
               onChange={this.handleChange}
-              className="form-control" 
-              placeholder="Enter manager" 
+              className="form-control"
+              placeholder="Enter manager"
               id="manager" />
-  
+
               <div className="text-danger">{this.state.errors.manager}</div>
           </div>
-  
+
           <div className="form-group">
             <label htmlFor="username">Username:</label>
-            <input 
-              type="text" 
-              name="username" 
+            <input
+              type="text"
+              name="username"
               value={this.state.input.username}
               onChange={this.handleChange}
-              className="form-control" 
-              placeholder="Enter username" 
+              className="form-control"
+              placeholder="Enter username"
               id="username" />
-  
+
               <div className="text-danger">{this.state.errors.username}</div>
           </div>
-  
+
           <div className="form-group">
             <label htmlFor="password">Password:</label>
-            <input 
-              type="password" 
-              name="password" 
+            <input
+              type="password"
+              name="password"
               value={this.state.input.password}
               onChange={this.handleChange}
-              className="form-control" 
-              placeholder="Enter password" 
+              className="form-control"
+              placeholder="Enter password"
               id="password" />
-  
+
               <div className="text-danger">{this.state.errors.password}</div>
           </div>
 
@@ -162,5 +167,5 @@ class CfyConnection extends React.Component {
     );
   }
 }
-  
+
 export default CfyConnection;
